@@ -1,3 +1,4 @@
+require('pry')
 require_relative('../db/sql_runner.rb')
 require_relative('./albums.rb')
 
@@ -17,7 +18,7 @@ class Artist
     return album_hashes.map { |album_hash| Album.new(album_hash) }
   end
 
-  def save()
+  def save_artist()
     sql = "INSERT INTO artists (name)
     VALUES ($1)
     RETURNING *"
@@ -25,13 +26,13 @@ class Artist
     @id = SqlRunner.run(sql, values).first['id'].to_i
   end
 
-  def update
-    sql = "UPDATE artists SET (name) = ($1) WHERE id = $2"
+  def update_artist
+    sql = "UPDATE artists SET name = $1 WHERE id = $2"
     values = [@name, @id]
     SqlRunner.run(sql, values)
   end
 
-  def delete
+  def delete_artist
     sql = 'DELETE FROM artists WHERE id = $1'
     values = [@id]
     SqlRunner.run(sql, values)
@@ -48,7 +49,7 @@ class Artist
     sql = "SELECT * FROM artists WHERE id = $1"
     values = [id]
     result = SqlRunner.run(sql, values).first
-    return Artist.new(result)
+    return Artist.new(result) if result != nil
   end
 
   def self.delete_all

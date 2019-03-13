@@ -20,19 +20,19 @@ class Album
     return Artist.new(artist_hash)
   end
 
-  def save()
+  def save_album()
     sql = "INSERT INTO albums (name, genre, artist_id) VALUES ($1, $2, $3) RETURNING id"
     values = [@name, @genre, @artist_id]
     @id = SqlRunner.run(sql, values).first['id'].to_i
   end
 
-  def update
+  def update_album
     sql = "UPDATE albums SET (name, genre, artist_id) = ($1, $2, $3) WHERE id = $4"
     values = [@name, @genre, @artist_id, @id]
     SqlRunner.run(sql, values)
   end
 
-  def delete
+  def delete_album
     sql = 'DELETE FROM albums WHERE id = $1'
     values = [@id]
     SqlRunner.run(sql, values)
