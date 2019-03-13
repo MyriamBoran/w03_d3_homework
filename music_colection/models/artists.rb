@@ -25,9 +25,23 @@ class Artist
     @id = SqlRunner.run(sql, values).first['id'].to_i
   end
 
-  def self.delete_all
-    sql = "DELETE FROM artists"
-    SqlRunner.run(sql)
+  def update
+    sql = "UPDATE artists SET (name) = ($1) WHERE id = $2"
+    values = [@name, @id]
+    SqlRunner.run(sql, values)
+  end
+
+  def delete
+    sql = 'DELETE FROM artists WHERE id = $1'
+    values = [@id]
+    SqlRunner.run(sql, values)
+  end
+
+  def self.all
+    sql = "SELECT * FROM artists"
+    artist_hashes = SqlRunner.run(sql)
+    artists = artist_hashes.map { |hash| Artist.new(hash) }
+    return artists
   end
 
   def self.find(id)
@@ -37,17 +51,8 @@ class Artist
     return Artist.new(result)
   end
 
-  def self.all
-    sql = "SELECT * FROM artists"
-    artist_hashes = SqlRunner.run(sql)
-    artists = artist_hashes.map { |hash| Artist.new(hash)  }
-    return artists
+  def self.delete_all
+    sql = "DELETE FROM artists"
+    SqlRunner.run(sql)
   end
-
-  def self.update
-    sql = "UPDATE name FROM artists WHERE name = $1"
-    values = [@name]
-    SqlRunner.run(sql, values)
-  end
-
 end
